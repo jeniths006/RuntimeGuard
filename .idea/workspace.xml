@@ -4,14 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0c5f68d8-65c3-465e-827a-3e991278c8f6" name="Changes" comment="" />
+    <list default="true" id="0c5f68d8-65c3-465e-827a-3e991278c8f6" name="Changes" comment="feat(cli): add application entry point">
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/jeniths006/runtimeguard/cli/RuntimeGuardApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/jeniths006/runtimeguard/cli/RuntimeGuardApplication.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="12" />
+    <option name="cachedIndexableFilesCount" value="33" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="ExternalProjectsData">
@@ -36,42 +41,115 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "jeniths006"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;jeniths006&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/jeniths006/RuntimeGuard",
-    "accountId": "07599c0d-5039-4687-86bb-93045e9d08b0"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/jeniths006/RuntimeGuard&quot;,
+    &quot;accountId&quot;: &quot;07599c0d-5039-4687-86bb-93045e9d08b0&quot;
   }
-}]]></component>
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3,
-  "fromUser": false
-}]]></component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.5180215118516073E-6" />
+      <entry key="MS500" value="0.11803725480787124" />
+      <entry key="S2" value="1.3391296038469607" />
+      <entry key="S5" value="2.66658788405859" />
+      <entry key="S10" value="3.863778949814429" />
+      <entry key="S30" value="6.388103577814886" />
+      <entry key="S60" value="7.8957358497030965" />
+      <entry key="M2" value="10.25404275784736" />
+      <entry key="M5" value="19.73826441991438" />
+      <entry key="M10" value="31.04121258919275" />
+      <entry key="M15" value="40.35131473775106" />
+      <entry key="M30" value="70.36871138383651" />
+      <entry key="H1" value="116.34011894064463" />
+      <entry key="H2" value="159.94011287335488" />
+      <entry key="H4" value="190.47394926836682" />
+      <entry key="D1" value="221.93721528129754" />
+      <entry key="W1" value="227.97403803871651" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="1.003043611639299" />
+      <entry key="MS500" value="1.3138245147563659" />
+      <entry key="S2" value="1.8143171873739843" />
+      <entry key="S5" value="2.391262618837036" />
+      <entry key="S10" value="3.0819143897498984" />
+      <entry key="S30" value="4.6487162451904585" />
+      <entry key="S60" value="5.597768059604233" />
+      <entry key="M2" value="6.582788661906569" />
+      <entry key="M5" value="8.746711912960954" />
+      <entry key="M10" value="10.721019155354151" />
+      <entry key="M15" value="11.774736637058199" />
+      <entry key="M30" value="13.272810249082053" />
+      <entry key="H1" value="14.372576411832535" />
+      <entry key="H2" value="15.094441212087554" />
+      <entry key="H4" value="15.519660184404337" />
+      <entry key="D1" value="15.915636833028678" />
+      <entry key="W1" value="15.98783570279609" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.02435328840237403" />
+      <entry key="MS500" value="0.6286320360848421" />
+      <entry key="S2" value="2.4872689398030206" />
+      <entry key="S5" value="4.574290375479014" />
+      <entry key="S10" value="6.593872561400308" />
+      <entry key="S30" value="10.835070990315106" />
+      <entry key="S60" value="13.36623207636335" />
+      <entry key="M2" value="16.75640896811876" />
+      <entry key="M5" value="28.43235937104562" />
+      <entry key="M10" value="41.725593134213234" />
+      <entry key="M15" value="52.097885779896714" />
+      <entry key="M30" value="83.6247591292816" />
+      <entry key="H1" value="130.70331690256" />
+      <entry key="H2" value="175.02953294262724" />
+      <entry key="H4" value="205.9910001534621" />
+      <entry key="D1" value="237.85240179783017" />
+      <entry key="W1" value="243.9618090069531" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3,
+  &quot;fromUser&quot;: false
+}</component>
   <component name="ProjectId" id="3GJvIiHIfrpOBfPcg5f0PtdnheL" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Gradle.RuntimeGuard [:io.github.jeniths006.runtimeguard.cli.RuntimeGuardApplication.main()].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/jenit/Documents/College/Projects/RuntimeGuard",
     "node.js.detected.package.eslint": "true",
@@ -85,6 +163,17 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="Application" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="25" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="io.github.jeniths006.runtimeguard.cli.RuntimeGuardApplication" />
+      <module name="RuntimeGuard.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -100,11 +189,34 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1783702408466</updated>
-      <workItem from="1783702409645" duration="877000" />
+      <workItem from="1783702409645" duration="4302000" />
+      <workItem from="1783758701754" duration="3577000" />
     </task>
+    <task id="LOCAL-00001" summary="build: initialize Gradle project structure">
+      <option name="closed" value="true" />
+      <created>1783703633463</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1783703633463</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feat(cli): add application entry point">
+      <option name="closed" value="true" />
+      <created>1783708651938</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1783708651938</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="build: initialize Gradle project structure" />
+    <MESSAGE value="feat(cli): add application entry point" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(cli): add application entry point" />
   </component>
 </project>
