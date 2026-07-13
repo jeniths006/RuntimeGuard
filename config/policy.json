@@ -1,0 +1,13 @@
+{
+  "filesystem": {
+    "mode": "READ_ONLY"
+  },
+
+  "network": {
+    "allow": false
+  },
+
+  "process": {
+    "allowChildProcesses": false
+  }
+}

@@ -22,7 +22,7 @@ public class SandboxController {
             Policy policy = policyLoader.load(policyPath);
             System.out.println("Policy loaded successfully");
         } catch (PolicyLoadException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
 

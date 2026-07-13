@@ -1,4 +1,4 @@
 package io.github.jeniths006.runtimeguard.model.policy;
 
-public record ProcessPolicy() {
+public record ProcessPolicy(boolean allowChildProcesses) {
 }

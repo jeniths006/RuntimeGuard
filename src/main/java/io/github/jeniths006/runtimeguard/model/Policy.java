@@ -5,8 +5,8 @@ import io.github.jeniths006.runtimeguard.model.policy.NetworkPolicy;
 import io.github.jeniths006.runtimeguard.model.policy.ProcessPolicy;
 
 public record Policy(
-        FileSystemPolicy fileSystemPolicy,
-        NetworkPolicy networkPolicy,
-        ProcessPolicy processPolicy
+        FileSystemPolicy filesystem,
+        NetworkPolicy network,
+        ProcessPolicy process
 ) {
 }
