@@ -8,11 +8,13 @@ import io.github.jeniths006.runtimeguard.model.ExecutionRequest;
 import io.github.jeniths006.runtimeguard.model.Policy;
 import io.github.jeniths006.runtimeguard.service.PolicyLoader;
 import io.github.jeniths006.runtimeguard.service.PolicyValidator;
+import io.github.jeniths006.runtimeguard.service.ProcessRunner;
 
 public class SandboxController {
 
     PolicyLoader policyLoader = new PolicyLoader();
     PolicyValidator policyValidator = new PolicyValidator();
+    ProcessRunner processRunner = new ProcessRunner();
 
     public void execute(ExecutionRequest request) {
         System.out.println("Executing " + request.action() + " on " + request.target());
@@ -25,6 +27,7 @@ public class SandboxController {
             System.out.println("Policy loaded successfully");
             policyValidator.validate(policy);
             System.out.println("Policy validated successfully");
+            Process process = processRunner.start(request.target());
 
         } catch (PolicyLoadException | PolicyValidationException e) {
            e.printStackTrace();
