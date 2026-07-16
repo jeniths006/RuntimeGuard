@@ -4,6 +4,7 @@ import java.nio.file.Path;
 
 import io.github.jeniths006.runtimeguard.exception.PolicyLoadException;
 import io.github.jeniths006.runtimeguard.exception.PolicyValidationException;
+import io.github.jeniths006.runtimeguard.model.ExecutionReport;
 import io.github.jeniths006.runtimeguard.model.ExecutionRequest;
 import io.github.jeniths006.runtimeguard.model.Policy;
 import io.github.jeniths006.runtimeguard.service.PolicyLoader;
@@ -30,10 +31,8 @@ public class SandboxController {
             policyValidator.validate(policy);
             System.out.println("Policy validated successfully");
             Process process = processRunner.start(request.target());
-            processMonitor.monitor(process);
-            int exitCode = processMonitor.waitFor(process);
-            System.out.println("Process exited with code: " + exitCode);
-
+            ExecutionReport report = processMonitor.monitor(process, request.target());
+            System.out.println(report);
 
 
         } catch (PolicyLoadException | PolicyValidationException e) {
