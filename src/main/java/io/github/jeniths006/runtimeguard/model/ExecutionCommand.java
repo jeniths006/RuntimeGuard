@@ -1,5 +1,5 @@
 package io.github.jeniths006.runtimeguard.model;
 
-public enum ExecutionAction {
+public enum ExecutionCommand  {
     RUN
 }

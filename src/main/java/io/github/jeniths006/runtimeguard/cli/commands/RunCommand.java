@@ -1,7 +1,7 @@
 package io.github.jeniths006.runtimeguard.cli.commands;
 import io.github.jeniths006.runtimeguard.controller.SandboxController;
-import io.github.jeniths006.runtimeguard.model.ExecutionAction;
-import io.github.jeniths006.runtimeguard.model.ExecutionRequest;
+import io.github.jeniths006.runtimeguard.model.ExecutionCommand;
+import io.github.jeniths006.runtimeguard.model.ProcessRequest;
 import picocli.CommandLine;
 
 @CommandLine.Command(
@@ -11,8 +11,8 @@ import picocli.CommandLine;
 public class RunCommand implements Runnable{
     @Override
     public void run() {
-        ExecutionRequest request = new ExecutionRequest(
-                ExecutionAction.RUN,
+        ProcessRequest request = new ProcessRequest(
+                ExecutionCommand.RUN,
                 program,
                 policyFile
         );

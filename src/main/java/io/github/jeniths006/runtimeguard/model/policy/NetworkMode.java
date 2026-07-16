@@ -1,4 +1,6 @@
 package io.github.jeniths006.runtimeguard.model.policy;
 
-public record ProcessPolicy(ProcessMode mode) {
+public enum NetworkMode {
+    ALLOW,
+    DENY
 }

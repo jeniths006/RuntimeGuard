@@ -5,12 +5,11 @@ import java.nio.file.Path;
 import io.github.jeniths006.runtimeguard.exception.PolicyLoadException;
 import io.github.jeniths006.runtimeguard.exception.PolicyValidationException;
 import io.github.jeniths006.runtimeguard.model.ExecutionReport;
-import io.github.jeniths006.runtimeguard.model.ExecutionRequest;
+import io.github.jeniths006.runtimeguard.model.ProcessRequest;
 import io.github.jeniths006.runtimeguard.model.Policy;
-import io.github.jeniths006.runtimeguard.service.PolicyLoader;
-import io.github.jeniths006.runtimeguard.service.PolicyValidator;
-import io.github.jeniths006.runtimeguard.service.ProcessMonitor;
-import io.github.jeniths006.runtimeguard.service.ProcessRunner;
+import io.github.jeniths006.runtimeguard.model.action.ActionType;
+import io.github.jeniths006.runtimeguard.model.action.ProcessAction;
+import io.github.jeniths006.runtimeguard.service.*;
 
 public class SandboxController {
 
@@ -19,7 +18,7 @@ public class SandboxController {
     ProcessRunner processRunner = new ProcessRunner();
     ProcessMonitor processMonitor = new ProcessMonitor();
 
-    public void execute(ExecutionRequest request) {
+    public void execute(ProcessRequest request) {
         System.out.println("Executing " + request.action() + " on " + request.target());
         System.out.println("Loading policy file: " + request.policyPath());
 
@@ -28,8 +27,17 @@ public class SandboxController {
         try {
             Policy policy = policyLoader.load(policyPath);
             System.out.println("Policy loaded successfully");
+
             policyValidator.validate(policy);
             System.out.println("Policy validated successfully");
+
+            PolicyEngine policyEngine = new PolicyEngine(policy);
+            ProcessAction action = new ProcessAction(ActionType.PROCESS_SPAWN, request.target());
+            if(!policyEngine.isAllowed(action)) {
+                System.out.println("Policy denied process execution.");
+                return;
+            }
+
             Process process = processRunner.start(request.target());
             ExecutionReport report = processMonitor.monitor(process, request.target());
             System.out.println(report);

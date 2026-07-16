@@ -1,7 +1,6 @@
 package io.github.jeniths006.runtimeguard.model;
 
 import java.time.Duration;
-import java.util.Optional;
 
 public record ExecutionReport(
         Long pid,

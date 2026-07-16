@@ -4,10 +4,10 @@
   },
 
   "network": {
-    "allow": false
+    "mode": "ALLOW"
   },
 
   "process": {
-    "allowChildProcesses": false
+    "mode": "ALLOW"
   }
 }
