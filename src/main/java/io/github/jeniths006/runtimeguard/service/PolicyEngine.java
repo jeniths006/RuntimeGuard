@@ -1,6 +1,7 @@
 package io.github.jeniths006.runtimeguard.service;
 
 import io.github.jeniths006.runtimeguard.model.Policy;
+import io.github.jeniths006.runtimeguard.model.PolicyDecision;
 import io.github.jeniths006.runtimeguard.model.action.ProcessAction;
 import io.github.jeniths006.runtimeguard.model.policy.FileSystemMode;
 import io.github.jeniths006.runtimeguard.model.policy.NetworkMode;
@@ -30,12 +31,12 @@ public class PolicyEngine {
         return policy.process().mode() == ProcessMode.ALLOW;
     }
 
-    public boolean isAllowed(ProcessAction action) {
+    public PolicyDecision evaluate(ProcessAction action) {
         return switch(action.action()) {
-            case FILE_READ -> canReadFiles();
-            case FILE_WRITE -> canWriteFiles();
-            case NETWORK_CONNECT -> canAccessNetwork();
-            case PROCESS_SPAWN ->  canSpawnProcesses();
+            case FILE_READ -> canReadFiles() ? PolicyDecision.ALLOW: PolicyDecision.DENY;
+            case FILE_WRITE -> canWriteFiles()  ? PolicyDecision.ALLOW: PolicyDecision.DENY;
+            case NETWORK_CONNECT -> canAccessNetwork()  ? PolicyDecision.ALLOW: PolicyDecision.DENY;
+            case PROCESS_SPAWN ->  canSpawnProcesses()  ? PolicyDecision.ALLOW: PolicyDecision.DENY;
         };
     }
 }

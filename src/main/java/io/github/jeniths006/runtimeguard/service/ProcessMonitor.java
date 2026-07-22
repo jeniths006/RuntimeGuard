@@ -1,14 +1,15 @@
 package io.github.jeniths006.runtimeguard.service;
 
 import io.github.jeniths006.runtimeguard.exception.ProcessMonitorException;
-import io.github.jeniths006.runtimeguard.model.ExecutionReport;
+import io.github.jeniths006.runtimeguard.model.reports.ExecutionReport;
+import io.github.jeniths006.runtimeguard.model.reports.ProcessMonitorResult;
 
 import java.time.Duration;
 import java.time.Instant;
 
 public class ProcessMonitor {
 
-    public ExecutionReport monitor(Process process, String program) {
+    public ProcessMonitorResult monitor(Process process) {
 
         int exitCode;
 
@@ -28,7 +29,7 @@ public class ProcessMonitor {
 
         Duration executionTime = Duration.between(start, end);
 
-        return new ExecutionReport(process.pid(), program, exitCode, process.info(), executionTime);
+        return new ProcessMonitorResult(process.pid(), exitCode, process.info(), executionTime);
 
     }
 
