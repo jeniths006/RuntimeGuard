@@ -14,19 +14,35 @@ import io.github.jeniths006.runtimeguard.model.action.ActionType;
 import io.github.jeniths006.runtimeguard.model.action.ProcessAction;
 import io.github.jeniths006.runtimeguard.model.reports.ProcessMonitorResult;
 import io.github.jeniths006.runtimeguard.service.*;
+import io.github.jeniths006.runtimeguard.service.interceptor.ProcessActionListener;
 
-public class SandboxController {
+public class SandboxController implements ProcessActionListener{
+
+    private PolicyEngine policyEngine;
+    private List<ExecutionEvent> executionEvents;
 
     private final PolicyLoader policyLoader = new PolicyLoader();
     private final PolicyValidator policyValidator = new PolicyValidator();
     private final ProcessRunner processRunner = new ProcessRunner();
     private final ProcessMonitor processMonitor = new ProcessMonitor();
 
+    @Override
+    public PolicyDecision onAction(ProcessAction processAction) {
+        PolicyDecision policyDecison = policyEngine.evaluate(processAction);
+        ExecutionEvent event = new ExecutionEvent(
+                processAction,
+                policyDecison,
+                Instant.now()
+        );
+        executionEvents.add(event);
+        return policyDecison;
+    }
+
     public void execute(ProcessRequest request) {
         System.out.println("Executing " + request.action() + " on " + request.target());
         System.out.println("Loading policy file: " + request.policyPath());
+        this.executionEvents = new ArrayList<>();
 
-        List<ExecutionEvent> executionEvents = new ArrayList<>();
 
         Path policyPath = Path.of(request.policyPath());
 
@@ -40,15 +56,15 @@ public class SandboxController {
             policyValidator.validate(policy);
             System.out.println("Policy validated successfully");
 
-            //Create Policy Engine
-            PolicyEngine policyEngine = new PolicyEngine(policy);
+
 
             //Create a new Process Action with type of process action and target
             ProcessAction processAction = new ProcessAction(ActionType.PROCESS_SPAWN, request.target());
 
 
             //Evaluate policy to come to a decision ALLOW/DENY
-            PolicyDecision policyDecision = recordEvent(processAction, policyEngine, executionEvents);
+            PolicyDecision policyDecision = onAction(processAction);
+
 
             //Terminate process if DENY
             if(policyDecision == PolicyDecision.DENY) {
@@ -56,9 +72,12 @@ public class SandboxController {
                 return;
             }
 
+            //Create Policy Engine
+            this.policyEngine = new PolicyEngine(policy);
+
             //Test Data
             ProcessAction fileReadAction = new ProcessAction(ActionType.FILE_READ, "C:\\temp\\secret.txt");
-            recordEvent(fileReadAction, policyEngine, executionEvents);
+            onAction(fileReadAction);
 
 
             Process process = processRunner.start(request.target());
@@ -83,15 +102,4 @@ public class SandboxController {
         }
     }
 
-    //Record execution event and evalaute policy and record execution event
-    private PolicyDecision recordEvent(ProcessAction action, PolicyEngine engine, List<ExecutionEvent> executionEvents) {
-        PolicyDecision decision = engine.evaluate(action);
-        ExecutionEvent event = new ExecutionEvent(
-                action,
-                decision,
-                Instant.now()
-        );
-        executionEvents.add(event);
-        return decision;
-    }
 }
