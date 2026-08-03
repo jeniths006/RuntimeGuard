@@ -15,10 +15,12 @@ public record ExecutionEvent(
     public String toString() {
         return """
             Action: %s
+            Target: %s
             Decision: %s
             Time: %s
             """.formatted(
-                    processAction,
+                    processAction.action(),
+                    processAction.target(),
                 policyDecision,
                 instant
         );

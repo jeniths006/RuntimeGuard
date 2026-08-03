@@ -26,35 +26,45 @@ public class SandboxController {
         System.out.println("Executing " + request.action() + " on " + request.target());
         System.out.println("Loading policy file: " + request.policyPath());
 
+        List<ExecutionEvent> executionEvents = new ArrayList<>();
+
         Path policyPath = Path.of(request.policyPath());
 
         try {
+
+            //Loading policy
             Policy policy = policyLoader.load(policyPath);
             System.out.println("Policy loaded successfully");
 
+            //Validate Policy file
             policyValidator.validate(policy);
             System.out.println("Policy validated successfully");
 
+            //Create Policy Engine
             PolicyEngine policyEngine = new PolicyEngine(policy);
+
+            //Create a new Process Action with type of process action and target
             ProcessAction processAction = new ProcessAction(ActionType.PROCESS_SPAWN, request.target());
-            PolicyDecision policyDecision = policyEngine.evaluate(processAction);
+
+
+            //Evaluate policy to come to a decision ALLOW/DENY
+            PolicyDecision policyDecision = recordEvent(processAction, policyEngine, executionEvents);
+
+            //Terminate process if DENY
             if(policyDecision == PolicyDecision.DENY) {
                 System.out.println("Policy denied process execution.");
                 return;
             }
 
-            ExecutionEvent executionEvent = new ExecutionEvent(
-                    processAction,
-                    policyDecision,
-                    Instant.now()
-            );
+            //Test Data
+            ProcessAction fileReadAction = new ProcessAction(ActionType.FILE_READ, "C:\\temp\\secret.txt");
+            recordEvent(fileReadAction, policyEngine, executionEvents);
 
-            List<ExecutionEvent> executionEvents = new ArrayList<>();
-            executionEvents.add(executionEvent);
 
             Process process = processRunner.start(request.target());
             ProcessMonitorResult processMonitorResult = processMonitor.monitor(process);
 
+            //Create execution report
             ExecutionReport executionReport = new ExecutionReport(
                     processMonitorResult.pid(),
                     request.target(),
@@ -71,8 +81,17 @@ public class SandboxController {
         } catch (PolicyLoadException | PolicyValidationException e) {
            e.printStackTrace();
         }
+    }
 
-
-
+    //Record execution event and evalaute policy and record execution event
+    private PolicyDecision recordEvent(ProcessAction action, PolicyEngine engine, List<ExecutionEvent> executionEvents) {
+        PolicyDecision decision = engine.evaluate(action);
+        ExecutionEvent event = new ExecutionEvent(
+                action,
+                decision,
+                Instant.now()
+        );
+        executionEvents.add(event);
+        return decision;
     }
 }
