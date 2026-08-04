@@ -13,8 +13,12 @@ import io.github.jeniths006.runtimeguard.model.reports.ExecutionReport;
 import io.github.jeniths006.runtimeguard.model.action.ActionType;
 import io.github.jeniths006.runtimeguard.model.action.ProcessAction;
 import io.github.jeniths006.runtimeguard.model.reports.ProcessMonitorResult;
+import io.github.jeniths006.runtimeguard.platform.windows.WindowsETWInterceptor;
+import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.Kernel32DLL;
 import io.github.jeniths006.runtimeguard.service.*;
 import io.github.jeniths006.runtimeguard.service.interceptor.ProcessActionListener;
+import io.github.jeniths006.runtimeguard.service.interceptor.ProcessInterceptor;
+import io.github.jeniths006.runtimeguard.service.interceptor.factory.PlatformInterceptorFactory;
 
 public class SandboxController implements ProcessActionListener{
 
@@ -25,6 +29,7 @@ public class SandboxController implements ProcessActionListener{
     private final PolicyValidator policyValidator = new PolicyValidator();
     private final ProcessRunner processRunner = new ProcessRunner();
     private final ProcessMonitor processMonitor = new ProcessMonitor();
+    private final ProcessInterceptor processInterceptor = PlatformInterceptorFactory.create();
 
     @Override
     public PolicyDecision onAction(ProcessAction processAction) {
@@ -56,15 +61,14 @@ public class SandboxController implements ProcessActionListener{
             policyValidator.validate(policy);
             System.out.println("Policy validated successfully");
 
-
-
             //Create a new Process Action with type of process action and target
             ProcessAction processAction = new ProcessAction(ActionType.PROCESS_SPAWN, request.target());
 
+            //Create Policy Engine
+            this.policyEngine = new PolicyEngine(policy);
 
             //Evaluate policy to come to a decision ALLOW/DENY
             PolicyDecision policyDecision = onAction(processAction);
-
 
             //Terminate process if DENY
             if(policyDecision == PolicyDecision.DENY) {
@@ -72,15 +76,20 @@ public class SandboxController implements ProcessActionListener{
                 return;
             }
 
-            //Create Policy Engine
-            this.policyEngine = new PolicyEngine(policy);
-
             //Test Data
             ProcessAction fileReadAction = new ProcessAction(ActionType.FILE_READ, "C:\\temp\\secret.txt");
             onAction(fileReadAction);
 
-
+            //Start process
             Process process = processRunner.start(request.target());
+
+            Thread interceptorThread = new Thread(() ->
+                    processInterceptor.observe(process, this)
+            );
+
+            interceptorThread.start();
+
+            //Start monitoring process
             ProcessMonitorResult processMonitorResult = processMonitor.monitor(process);
 
             //Create execution report
@@ -93,9 +102,10 @@ public class SandboxController implements ProcessActionListener{
                     executionEvents
             );
 
+            //Print execution report
             System.out.println(executionReport);
 
-
+            System.out.println("Current JVM PID: " + Kernel32DLL.INSTANCE.GetCurrentProcessId());
 
         } catch (PolicyLoadException | PolicyValidationException e) {
            e.printStackTrace();
