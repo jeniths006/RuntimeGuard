@@ -8,17 +8,19 @@ import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.callback.Eve
 
 import java.util.List;
 
+import static com.sun.jna.Pointer.NULL;
+
 public class EventTraceLogFile extends Structure {
 
-    public WString logFileName;
-    public WString loggerName;
+    public Pointer logFileName;
+    public Pointer loggerName;
 
     public long currentTime;
     public int buffersRead;
 
     public FileProcessModeUnion fileProcessModeUnion = new FileProcessModeUnion();
-    public EventTrace currentEvent = new EventTrace();
-    public TraceLogFileHeader logFileHeader = new TraceLogFileHeader();
+    public Pointer currentEvent = Pointer.NULL;
+    public Pointer logFileHeader = Pointer.NULL;
     public BufferCallback bufferCallback;
 
     public int bufferSizeFilled;

@@ -3,6 +3,7 @@ package io.github.jeniths006.runtimeguard.platform.windows.nativeapi.structures;
 import com.sun.jna.Structure;
 
 import java.util.List;
+import com.sun.jna.platform.win32.Guid.GUID;
 
 public class EventHeader extends Structure {
 
@@ -16,12 +17,12 @@ public class EventHeader extends Structure {
 
     public long timeStamp;
 
-    public Guid providerId = new Guid();
+    public GUID providerId = new GUID();
 
     public EventDescriptor eventDescriptor = new EventDescriptor();
 
     public EventTimeUnion eventTime = new EventTimeUnion();
-    public Guid activityId = new Guid();
+    public GUID activityId = new GUID();
     @Override
     protected List<String> getFieldOrder() {
         return List.of(

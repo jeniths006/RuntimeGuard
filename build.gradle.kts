@@ -6,6 +6,12 @@ plugins {
 group = "io.github.jeniths006"
 version = "1.0-SNAPSHOT"
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -27,3 +33,18 @@ tasks.test {
 application {
     mainClass.set("io.github.jeniths006.runtimeguard.cli.RuntimeGuardApplication")
 }
+
+tasks.jar {
+    manifest {
+        attributes("Main-Class" to "io.github.jeniths006.runtimeguard.cli.RuntimeGuardApplication")
+    }
+
+    from(sourceSets["main"].output)
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.isFile }.map { zipTree(it) }
+    })
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
