@@ -6,6 +6,8 @@ import com.sun.jna.Pointer;
 import com.sun.jna.WString;
 import com.sun.jna.platform.win32.BaseTSD;
 import com.sun.jna.platform.win32.WinNT;
+import io.github.jeniths006.runtimeguard.platform.windows.etw.decoder.ProcessEvent;
+import io.github.jeniths006.runtimeguard.platform.windows.etw.decoder.ProcessEventDecoder;
 import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.Advapi32DLL;
 import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.callback.EventRecordCallback;
 import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.structures.EnableTraceParameters;
@@ -156,7 +158,7 @@ public class ETWSession {
             System.out.println("Version        : " + Byte.toUnsignedInt(header.eventDescriptor.version));
             System.out.println("userDataLength : " + userDataLength);
 
-            if (userDataLength > 0 && record.userData != null &&
+            /*if (userDataLength > 0 && record.userData != null &&
                     Pointer.nativeValue(record.userData) != 0) {
                 byte[] userData = record.userData.getByteArray(0, Math.min(userDataLength, 64));
                 for (int offset = 0; offset < userData.length; offset += 16) {
@@ -166,6 +168,18 @@ public class ETWSession {
                     }
                     System.out.println(line);
                 }
+            }*/
+            ProcessEventDecoder decoder = new ProcessEventDecoder();
+
+            ProcessEvent event = decoder.decode(record);
+
+            if (event != null) {
+                System.out.println(
+                        "PROCESS EVENT: "
+                                + event.processEventType()
+                                + " PID="
+                                + event.pid()
+                );
             }
         };
 
