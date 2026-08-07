@@ -14,6 +14,13 @@ import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.structures.E
 import io.github.jeniths006.runtimeguard.service.interceptor.ProcessActionListener;
 import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.ETWConstants;
 
+import com.sun.jna.platform.win32.Guid;
+
+import java.util.Comparator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
+
 
 public class ETWSession {
 
@@ -25,9 +32,12 @@ public class ETWSession {
     private EventTraceLogFile logFile;
     private EventRecordCallback callback;
     private Memory loggerNameMemory;
+    private Thread traceThread;
+    private final Map<EventDescriptorKey, LongAdder> eventCounts = new ConcurrentHashMap<>();
 
 
-    public void start(long pid, ProcessActionListener processActionListener) {
+    public synchronized void start(long pid, ProcessActionListener processActionListener) {
+        eventCounts.clear();
         ETWSessionProperties sessionProperties = propertiesBuilder.build(sessionName);
 
         int result = Advapi32DLL.INSTANCE.StartTraceW(
@@ -60,7 +70,7 @@ public class ETWSession {
 
         System.out.println("Trace Handle: " + traceHandle);
 
-        Thread traceThread = new Thread(() -> {
+        traceThread = new Thread(() -> {
             WinNT.HANDLE[] handles = { traceHandle };
 
             int result2 = Advapi32DLL.INSTANCE.ProcessTrace(
@@ -83,7 +93,7 @@ public class ETWSession {
 
     }
 
-    public void stop() {
+    public synchronized void stop() {
         System.out.println("Stopping ETW session...");
 
         if (traceHandle != null) {
@@ -98,6 +108,16 @@ public class ETWSession {
                     ETWConstants.EVENT_TRACE_CONTROL_STOP
             );
         }
+
+        if (traceThread != null) {
+            try {
+                traceThread.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        printEventSummary();
     }
 
 
@@ -126,6 +146,24 @@ public class ETWSession {
         callback = record -> {
             EventHeader header = record.eventHeader;
 
+            if(header.processId != pid) {
+                return;
+            }
+
+            EventDescriptorKey key = new EventDescriptorKey(
+                    formatGuid(header.providerId),
+                    Short.toUnsignedInt(header.eventDescriptor.id),
+                    Byte.toUnsignedInt(header.eventDescriptor.version),
+                    Byte.toUnsignedInt(header.eventDescriptor.opcode),
+                    Short.toUnsignedInt(header.eventDescriptor.task),
+                    header.eventDescriptor.keyword
+            );
+            eventCounts.computeIfAbsent(key, ignored -> new LongAdder()).increment();
+        };
+
+        /*callback = record -> {
+            EventHeader header = record.eventHeader;
+
             System.out.println("========== ETW ==========");
             System.out.println("Provider : " + header.providerId);
             System.out.println("PID      : " + header.processId);
@@ -134,7 +172,7 @@ public class ETWSession {
             System.out.println("Task     :" + header.eventDescriptor.task);
             System.out.println("Level    :" + header.eventDescriptor.level);
             System.out.println("Keyword  :" + header.eventDescriptor.keyword);
-        };
+        };*/
 
         logFile.eventRecordCallback = callback;
 
@@ -144,6 +182,42 @@ public class ETWSession {
         logFile.write();
 
         return logFile;
+    }
+
+    private void printEventSummary() {
+        if (eventCounts.isEmpty()) {
+            return;
+        }
+
+        System.out.println("ETW event summary:");
+        eventCounts.entrySet().stream()
+                .sorted(Map.Entry.<EventDescriptorKey, LongAdder>comparingByValue(
+                        Comparator.comparingLong(LongAdder::sum)).reversed())
+                .forEach(entry -> System.out.printf("%d x %s%n", entry.getValue().sum(), entry.getKey()));
+    }
+
+    private static String formatGuid(Guid.GUID guid) {
+        byte[] data4 = guid.Data4;
+        return String.format(
+                "%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+                guid.Data1,
+                Short.toUnsignedInt(guid.Data2),
+                Short.toUnsignedInt(guid.Data3),
+                Byte.toUnsignedInt(data4[0]), Byte.toUnsignedInt(data4[1]),
+                Byte.toUnsignedInt(data4[2]), Byte.toUnsignedInt(data4[3]),
+                Byte.toUnsignedInt(data4[4]), Byte.toUnsignedInt(data4[5]),
+                Byte.toUnsignedInt(data4[6]), Byte.toUnsignedInt(data4[7])
+        );
+    }
+
+    private record EventDescriptorKey(
+            String provider,
+            int id,
+            int version,
+            int opcode,
+            int task,
+            long keyword
+    ) {
     }
 
     private void enableKernelProviders() {
