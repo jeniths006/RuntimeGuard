@@ -162,7 +162,7 @@ public class ETWSession {
             System.out.println("Version        : " + Byte.toUnsignedInt(header.eventDescriptor.version));
             System.out.println("userDataLength : " + userDataLength);
 
-            /*if (userDataLength > 0 && record.userData != null &&
+            if (userDataLength > 0 && record.userData != null &&
                     Pointer.nativeValue(record.userData) != 0) {
                 byte[] userData = record.userData.getByteArray(0, Math.min(userDataLength, 64));
                 for (int offset = 0; offset < userData.length; offset += 16) {
@@ -172,7 +172,7 @@ public class ETWSession {
                     }
                     System.out.println(line);
                 }
-            }*/
+            }
             ProcessEventDecoder decoder = new ProcessEventDecoder();
 
             ProcessEvent event = decoder.decode(record);
@@ -183,7 +183,7 @@ public class ETWSession {
 
                     ProcessAction action = new ProcessAction(
                             ActionType.PROCESS_SPAWN,
-                            String.valueOf(event.pid())
+                            event.imageName()
                     );
 
                     PolicyDecision decision =
