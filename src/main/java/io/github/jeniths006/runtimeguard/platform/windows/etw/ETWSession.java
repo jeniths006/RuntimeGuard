@@ -44,7 +44,7 @@ public class ETWSession {
             );
         }
 
-        enableKernelProviders();
+        //enableKernelProviders();
 
 
         this.logFile = createTraceLogFile(pid, processActionListener);
@@ -142,7 +142,7 @@ public class ETWSession {
                 KernelProviders.SYSTEM_TRACE_PROVIDER,
                 ETWConstants.EVENT_CONTROL_CODE_ENABLE_PROVIDER,
                 ETWConstants.TRACE_LEVEL_INFORMATION,
-                0,
+                ETWConstants.EVENT_TRACE_FLAG_PROCESS,
                 0,
                 0,
                 null

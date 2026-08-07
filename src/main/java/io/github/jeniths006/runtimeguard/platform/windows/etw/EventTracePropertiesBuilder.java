@@ -22,15 +22,19 @@ public class EventTracePropertiesBuilder {
         Memory memory = new Memory(propertiesSize + sessionNameBytes);
 
         EventTraceProperties properties = new EventTraceProperties(memory);
+        properties.wnode.guid = new Guid.GUID(UUID.randomUUID().toString());
         properties.wnode.bufferSize = propertiesSize + sessionNameBytes;
         properties.wnode.clientContext = 1;
         properties.wnode.flags = ETWConstants.WNODE_FLAG_TRACED_GUID;
         properties.bufferSize = 64;
         properties.minimumBuffers = 5;
         properties.maximumBuffers = 200;
-        properties.logFileMode = ETWConstants.EVENT_TRACE_REAL_TIME_MODE;
+        properties.logFileMode = ETWConstants.EVENT_TRACE_REAL_TIME_MODE | ETWConstants.EVENT_TRACE_SYSTEM_LOGGER_MODE;
         properties.logFileNameOffset = 0;
         properties.loggerNameOffset = propertiesSize;
+        properties.enableFlags = ETWKernelFlags.EVENT_TRACE_FLAG_PROCESS |
+                                 ETWKernelFlags.EVENT_TRACE_FLAG_FILE_IO |
+                                 ETWKernelFlags.EVENT_TRACE_FLAG_NETWORK_TCPIP;
 
 
 

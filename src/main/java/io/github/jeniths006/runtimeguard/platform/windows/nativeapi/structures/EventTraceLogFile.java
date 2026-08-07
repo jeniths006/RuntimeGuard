@@ -2,13 +2,10 @@ package io.github.jeniths006.runtimeguard.platform.windows.nativeapi.structures;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
-import com.sun.jna.WString;
 import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.callback.BufferCallback;
 import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.callback.EventRecordCallback;
 
 import java.util.List;
-
-import static com.sun.jna.Pointer.NULL;
 
 public class EventTraceLogFile extends Structure {
 
@@ -19,11 +16,11 @@ public class EventTraceLogFile extends Structure {
     public int buffersRead;
 
     public FileProcessModeUnion fileProcessModeUnion = new FileProcessModeUnion();
-    public Pointer currentEvent = Pointer.NULL;
-    public Pointer logFileHeader = Pointer.NULL;
+    public EventTrace currentEvent = new EventTrace();
+    public TraceLogFileHeader logFileHeader = new TraceLogFileHeader();
     public BufferCallback bufferCallback;
 
-    public int bufferSizeFilled;
+    public int bufferSize;
     public int filled;
 
     public int eventsLost;
@@ -44,7 +41,7 @@ public class EventTraceLogFile extends Structure {
                 "currentEvent",
                 "logFileHeader",
                 "bufferCallback",
-                "bufferSizeFilled",
+                "bufferSize",
                 "filled",
                 "eventsLost",
                 "eventRecordCallback",

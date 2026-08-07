@@ -4,6 +4,7 @@ import com.sun.jna.Union;
 
 public class EventTimeUnion extends Union {
 
-    public KernelUserTime kernelUserTime = new KernelUserTime();
+    public int kernelTime;
+    public int clientContext;
     public long processorTime;
 }
