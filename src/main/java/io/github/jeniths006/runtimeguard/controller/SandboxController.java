@@ -92,6 +92,8 @@ public class SandboxController implements ProcessActionListener{
             //Start monitoring process
             ProcessMonitorResult processMonitorResult = processMonitor.monitor(process);
 
+            processInterceptor.stop();
+
             //Create execution report
             ExecutionReport executionReport = new ExecutionReport(
                     processMonitorResult.pid(),

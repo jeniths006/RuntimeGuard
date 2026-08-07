@@ -9,6 +9,7 @@ import com.sun.jna.platform.win32.WinNT;
 import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.Advapi32DLL;
 import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.callback.EventRecordCallback;
 import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.structures.EnableTraceParameters;
+import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.structures.EventHeader;
 import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.structures.EventTraceLogFile;
 import io.github.jeniths006.runtimeguard.service.interceptor.ProcessActionListener;
 import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.ETWConstants;
@@ -83,6 +84,7 @@ public class ETWSession {
     }
 
     public void stop() {
+        System.out.println("Stopping ETW session...");
 
         if (traceHandle != null) {
             Advapi32DLL.INSTANCE.CloseTrace(traceHandle);
@@ -122,7 +124,16 @@ public class ETWSession {
                         ETWConstants.PROCESS_TRACE_MODE_EVENT_RECORD;
 
         callback = record -> {
-            System.out.println("ETW EVENT RECEIVED");
+            EventHeader header = record.eventHeader;
+
+            System.out.println("========== ETW ==========");
+            System.out.println("Provider : " + header.providerId);
+            System.out.println("PID      : " + header.processId);
+            System.out.println("Thread   : " + header.threadId);
+            System.out.println("Opcode   :" + header.eventDescriptor.opcode);
+            System.out.println("Task     :" + header.eventDescriptor.task);
+            System.out.println("Level    :" + header.eventDescriptor.level);
+            System.out.println("Keyword  :" + header.eventDescriptor.keyword);
         };
 
         logFile.eventRecordCallback = callback;

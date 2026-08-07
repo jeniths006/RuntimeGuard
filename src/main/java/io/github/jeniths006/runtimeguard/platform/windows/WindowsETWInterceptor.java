@@ -18,4 +18,8 @@ public class WindowsETWInterceptor implements ProcessInterceptor {
         etwSession.start(targetPid, processActionListener);
 
     }
+    @Override
+    public void stop() {
+        etwSession.stop();
+    }
 }
