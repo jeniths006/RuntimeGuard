@@ -6,8 +6,12 @@ import com.sun.jna.Pointer;
 import com.sun.jna.WString;
 import com.sun.jna.platform.win32.BaseTSD;
 import com.sun.jna.platform.win32.WinNT;
+import io.github.jeniths006.runtimeguard.model.PolicyDecision;
+import io.github.jeniths006.runtimeguard.model.action.ActionType;
+import io.github.jeniths006.runtimeguard.model.action.ProcessAction;
 import io.github.jeniths006.runtimeguard.platform.windows.etw.decoder.ProcessEvent;
 import io.github.jeniths006.runtimeguard.platform.windows.etw.decoder.ProcessEventDecoder;
+import io.github.jeniths006.runtimeguard.platform.windows.etw.decoder.ProcessEventType;
 import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.Advapi32DLL;
 import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.callback.EventRecordCallback;
 import io.github.jeniths006.runtimeguard.platform.windows.nativeapi.structures.EnableTraceParameters;
@@ -174,12 +178,26 @@ public class ETWSession {
             ProcessEvent event = decoder.decode(record);
 
             if (event != null) {
-                System.out.println(
-                        "PROCESS EVENT: "
-                                + event.processEventType()
-                                + " PID="
-                                + event.pid()
-                );
+
+                if (event.processEventType() == ProcessEventType.START) {
+
+                    ProcessAction action = new ProcessAction(
+                            ActionType.PROCESS_SPAWN,
+                            String.valueOf(event.pid())
+                    );
+
+                    PolicyDecision decision =
+                            processActionListener.onAction(action);
+
+                    System.out.println(
+                            "PROCESS ACTION: "
+                                    + action.action()
+                                    + " TARGET="
+                                    + action.target()
+                                    + " DECISION="
+                                    + decision
+                    );
+                }
             }
         };
 
